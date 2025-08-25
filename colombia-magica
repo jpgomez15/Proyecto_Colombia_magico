@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva: Proyecto Colombia Mágica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Café y Palma -->
+    <!-- Application Structure Plan: The application is designed as a single-page experience with a fixed top navigation bar for easy access to four distinct sections: 'Visión General' (an introduction), 'Guía del Proyecto' (an interactive timeline), 'Herramientas' (resources), and 'Evaluación' (rubrics). This structure was chosen to logically segment the dense information of the original document, allowing users (teacher and students) to quickly jump to the content they need without extensive scrolling. The core interaction is a clickable timeline, which breaks down the project into manageable steps, revealing detailed information on demand. This task-oriented design enhances usability and makes the project guide feel more like an application and less like a static document. -->
+    <!-- Visualization & Content Choices: Report Info: Project steps/phases -> Goal: Organize a process -> Viz/Presentation: Interactive vertical timeline built with HTML/CSS. Interaction: Clicking a step reveals its detailed content, hiding others. Justification: A timeline visually represents the project's progression, making it easier to follow than a list. Library/Method: Vanilla JS for click events. | Report Info: Two evaluation rubrics -> Goal: Organize structured data -> Viz/Presentation: HTML tables toggled by buttons. Interaction: Buttons show/hide the relevant rubric. Justification: Toggles prevent clutter, showing only one rubric at a time, which is clearer for the user. Library/Method: Vanilla JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #f59e0b; /* amber-500 */
+            border: 4px solid #fef3c7; /* amber-100 */
+        }
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 50%;
+            width: 2px;
+            height: 100%;
+            background-color: #f59e0b; /* amber-500 */
+        }
+        .active-step {
+            background-color: #fef3c7; /* amber-100 */
+            border-color: #f59e0b; /* amber-500 */
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-teal-800">🇨🇴 Colombia Mágica</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="text-stone-600 hover:bg-amber-100 hover:text-amber-800 px-3 py-2 rounded-md text-sm font-medium">Visión General</a>
+                        <a href="#guide" class="text-stone-600 hover:bg-amber-100 hover:text-amber-800 px-3 py-2 rounded-md text-sm font-medium">Guía del Proyecto</a>
+                        <a href="#tools" class="text-stone-600 hover:bg-amber-100 hover:text-amber-800 px-3 py-2 rounded-md text-sm font-medium">Herramientas</a>
+                        <a href="#evaluation" class="text-stone-600 hover:bg-amber-100 hover:text-amber-800 px-3 py-2 rounded-md text-sm font-medium">Evaluación</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+        <section id="overview" class="text-center mb-16 scroll-mt-16">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-teal-800 mb-4">Proyecto: Colombia Mágica</h1>
+            <p class="max-w-3xl mx-auto text-lg text-stone-600">
+                Una guía interactiva para crear una galería de arte y restaurante inspirados en la rica cultura colombiana. Explora el arte de Botero, la gastronomía vibrante y el encanto del realismo mágico a través de un proyecto creativo y colaborativo.
+            </p>
+        </section>
+
+        <section id="guide" class="mb-16 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-teal-800">Guía del Proyecto</h2>
+                <p class="mt-2 text-stone-600">Sigue los pasos para completar tu viaje por la Colombia Mágica. Haz clic en cada fase para ver los detalles.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="md:col-span-1">
+                    <div id="timeline-nav" class="relative pl-8 border-l-2 border-amber-500/50">
+                        <div id="step-1" class="timeline-item relative mb-8 cursor-pointer p-4 border border-transparent rounded-lg transition-all duration-300 active-step">
+                            <h3 class="font-bold text-lg text-amber-900">Paso 1: Planificación</h3>
+                            <p class="text-sm text-stone-600">Clase 1</p>
+                        </div>
+                        <div id="step-2" class="timeline-item relative mb-8 cursor-pointer p-4 border border-transparent rounded-lg transition-all duration-300">
+                            <h3 class="font-bold text-lg text-amber-900">Paso 2: Investigación</h3>
+                            <p class="text-sm text-stone-600">Clases 2-3</p>
+                        </div>
+                        <div id="step-3" class="timeline-item relative mb-8 cursor-pointer p-4 border border-transparent rounded-lg transition-all duration-300">
+                            <h3 class="font-bold text-lg text-amber-900">Paso 3: Creación</h3>
+                            <p class="text-sm text-stone-600">Clases 4-6</p>
+                        </div>
+                         <div id="step-3.5" class="timeline-item relative mb-8 cursor-pointer p-4 border border-transparent rounded-lg transition-all duration-300">
+                            <h3 class="font-bold text-lg text-amber-900">Paso 3.5: Revisión entre Pares</h3>
+                            <p class="text-sm text-stone-600">Clase 7</p>
+                        </div>
+                        <div id="step-4" class="timeline-item relative cursor-pointer p-4 border border-transparent rounded-lg transition-all duration-300">
+                            <h3 class="font-bold text-lg text-amber-900">Paso 4: Presentación Final</h3>
+                            <p class="text-sm text-stone-600">Clases 8-9</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                    <div id="step-content">
+                        <!-- Content will be injected here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tools" class="mb-16 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-teal-800">Herramientas y Recursos</h2>
+                <p class="mt-2 text-stone-600">Utiliza Adobe Creative Cloud para dar vida a tu proyecto.</p>
+            </div>
+            <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                    <h3 class="font-bold text-xl text-teal-700 mb-2">Adobe Express</h3>
+                    <p class="text-stone-600">Perfecto para diseñar menús, folletos y carteles. Usa sus plantillas para crear materiales visualmente atractivos de forma rápida y sencilla.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                    <h3 class="font-bold text-xl text-teal-700 mb-2">Adobe Photoshop</h3>
+                    <p class="text-stone-600">Ideal para las "obras de arte". Manipula fotos para crear figuras al estilo Botero o diseña collages que capturen la esencia del realismo mágico.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                    <h3 class="font-bold text-xl text-teal-700 mb-2">Adobe Premiere Pro / Rush</h3>
+                    <p class="text-stone-600">Crea un video promocional para tu restaurante o galería. Añade música colombiana y diálogos en español para un toque profesional.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="evaluation" class="scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-teal-800">Evaluación</h2>
+                <p class="mt-2 text-stone-600">Consulta las rúbricas para entender los criterios de evaluación del proyecto.</p>
+            </div>
+
+            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <div class="flex justify-center mb-6 border-b border-stone-200">
+                    <button id="btn-rubric-teacher" class="px-4 py-2 font-semibold text-teal-700 border-b-2 border-teal-700">Rúbrica del Proyecto</button>
+                    <button id="btn-rubric-peer" class="px-4 py-2 font-semibold text-stone-500 border-b-2 border-transparent">Rúbrica de Revisión entre Pares</button>
+                </div>
+
+                <div id="rubric-teacher-content" class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-stone-600">
+                        <thead class="text-xs text-teal-800 uppercase bg-teal-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Criterio</th>
+                                <th scope="col" class="px-6 py-3">Sobresaliente (4)</th>
+                                <th scope="col" class="px-6 py-3">Competente (3)</th>
+                                <th scope="col" class="px-6 py-3">Necesita Mejorar (2)</th>
+                                <th scope="col" class="px-6 py-3">Deficiente (1)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Contenido y Vocabulario</th>
+                                <td class="px-6 py-4">Comprensión profunda de los temas. Vocabulario variado y apropiado.</td>
+                                <td class="px-6 py-4">Buena comprensión de los temas. Vocabulario adecuado.</td>
+                                <td class="px-6 py-4">Comprensión superficial. Vocabulario limitado.</td>
+                                <td class="px-6 py-4">Comprensión mínima o incorrecta. Vocabulario inapropiado.</td>
+                            </tr>
+                            <tr class="bg-stone-50 border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Gramática</th>
+                                <td class="px-6 py-4">Uso correcto y avanzado. Errores mínimos.</td>
+                                <td class="px-6 py-4">Uso mayormente correcto. Errores ocasionales.</td>
+                                <td class="px-6 py-4">Errores frecuentes que dificultan la comprensión.</td>
+                                <td class="px-6 py-4">Errores constantes que hacen el mensaje incomprensible.</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Creatividad y Diseño</th>
+                                <td class="px-6 py-4">Proyecto original, visualmente atractivo y uso innovador de Adobe CC.</td>
+                                <td class="px-6 py-4">Proyecto creativo y uso efectivo de Adobe CC.</td>
+                                <td class="px-6 py-4">Diseño básico y uso mínimo de Adobe CC.</td>
+                                <td class="px-6 py-4">Carente de creatividad. No utiliza Adobe CC significativamente.</td>
+                            </tr>
+                            <tr class="bg-stone-50 border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Producción Oral</th>
+                                <td class="px-6 py-4">Presentación fluida, clara y persuasiva. Pronunciación excelente.</td>
+                                <td class="px-6 py-4">Presentación comprensible y coherente. Buena pronunciación.</td>
+                                <td class="px-6 py-4">Presentación vacilante, con pausas o pronunciación poco clara.</td>
+                                <td class="px-6 py-4">Presentación muy difícil de entender.</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Colaboración</th>
+                                <td class="px-6 py-4">Trabajo eficiente y equitativo. Todos contribuyeron activamente.</td>
+                                <td class="px-6 py-4">Buena colaboración y participación de la mayoría.</td>
+                                <td class="px-6 py-4">Dificultades para trabajar juntos. Contribución desigual.</td>
+                                <td class="px-6 py-4">Colaboración mínima o inexistente.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="rubric-peer-content" class="hidden overflow-x-auto">
+                    <h4 class="text-lg font-semibold text-teal-800 mb-4">Guía de Revisión</h4>
+                    <ul class="list-disc list-inside space-y-2 mb-6 text-stone-600">
+                        <li><b>Contenido:</b> ¿Se entiende bien el tema? ¿La información es interesante y correcta?</li>
+                        <li><b>Gramática y Vocabulario:</b> ¿El español es correcto? ¿Usan vocabulario variado?</li>
+                        <li><b>Creatividad y Diseño:</b> ¿El proyecto es original y atractivo? ¿Usaron bien Adobe CC?</li>
+                        <li><b>Realismo Mágico:</b> ¿Identifican elementos mágicos? ¿Se sienten naturales en el proyecto?</li>
+                    </ul>
+                    <table class="w-full text-sm text-left text-stone-600">
+                        <thead class="text-xs text-teal-800 uppercase bg-teal-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Criterio</th>
+                                <th scope="col" class="px-6 py-3">Excelente (4)</th>
+                                <th scope="col" class="px-6 py-3">Bueno (3)</th>
+                                <th scope="col" class="px-6 py-3">Suficiente (2)</th>
+                                <th scope="col" class="px-6 py-3">Necesita Mejorar (1)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Contenido y Claridad</th>
+                                <td class="px-6 py-4">La información es muy clara, completa e interesante.</td>
+                                <td class="px-6 py-4">La información es clara y correcta en general.</td>
+                                <td class="px-6 py-4">Hay algunas partes confusas o falta información.</td>
+                                <td class="px-6 py-4">La información es difícil de entender o tiene errores.</td>
+                            </tr>
+                            <tr class="bg-stone-50 border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Gramática y Vocabulario</th>
+                                <td class="px-6 py-4">Uso de español muy bueno; casi sin errores.</td>
+                                <td class="px-6 py-4">Pocos errores que no afectan la comprensión.</td>
+                                <td class="px-6 py-4">Varios errores que a veces confunden.</td>
+                                <td class="px-6 py-4">Muchos errores y vocabulario muy básico.</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Creatividad y Diseño</th>
+                                <td class="px-6 py-4">Diseño muy original, atractivo y usa bien Adobe.</td>
+                                <td class="px-6 py-4">Diseño creativo y usa bien Adobe.</td>
+                                <td class="px-6 py-4">Diseño simple o uso básico de Adobe.</td>
+                                <td class="px-6 py-4">Diseño poco atractivo o no se usaron bien las herramientas.</td>
+                            </tr>
+                            <tr class="bg-stone-50 border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Conexión con los Temas</th>
+                                <td class="px-6 py-4">La relación entre los temas es muy clara y profunda.</td>
+                                <td class="px-6 py-4">La relación entre los temas es evidente.</td>
+                                <td class="px-6 py-4">La relación no es muy clara o podría ser más fuerte.</td>
+                                <td class="px-6 py-4">La relación es débil o no existe.</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <th scope="row" class="px-6 py-4 font-medium text-stone-900 whitespace-nowrap">Realismo Mágico</th>
+                                <td class="px-6 py-4">Los elementos mágicos son innovadores y se integran perfectamente.</td>
+                                <td class="px-6 py-4">Hay elementos mágicos bien incorporados.</td>
+                                <td class="px-6 py-4">Los elementos mágicos son básicos o no están bien integrados.</td>
+                                <td class="px-6 py-4">No se encuentran elementos mágicos o no tienen sentido.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200">
+        <div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-stone-500">
+            <p>&copy; 2025 Proyecto Colombia Mágica. Una herramienta para la clase de español.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const steps = {
+                'step-1': {
+                    title: 'Paso 1: Introducción y Planificación',
+                    content: `
+                        <h3 class="text-2xl font-bold text-teal-800 mb-4">Introducción y Planificación (Clase 1)</h3>
+                        <p class="mb-4 text-stone-600">En esta primera fase, se introduce el proyecto y se sientan las bases para el trabajo en equipo.</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-700">
+                            <li><strong>Presentación del Proyecto:</strong> Se muestran ejemplos de arte, comida y realismo mágico de Colombia para inspirar a los estudiantes.</li>
+                            <li><strong>Formación de Grupos:</strong> Los estudiantes forman equipos de 3-4 personas y deciden el enfoque de su proyecto (galería, restaurante o ambos).</li>
+                            <li><strong>Asignación de Roles:</strong> Cada grupo asigna roles como Investigador, Diseñador Gráfico, Escritor y Coordinador para asegurar una participación equitativa.</li>
+                        </ul>
+                    `
+                },
+                'step-2': {
+                    title: 'Paso 2: Fase de Investigación',
+                    content: `
+                        <h3 class="text-2xl font-bold text-teal-800 mb-4">Fase de Investigación (Clases 2-3)</h3>
+                        <p class="mb-4 text-stone-600">Es hora de sumergirse en la cultura colombiana y recopilar la información que dará vida al proyecto.</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-700">
+                            <li><strong>Arte:</strong> Investigar la biografía y el estilo de Fernando Botero. Opcionalmente, explorar otros artistas como Doris Salcedo.</li>
+                            <li><strong>Literatura:</strong> Entender el concepto de realismo mágico y su conexión con Gabriel García Márquez.</li>
+                            <li><strong>Comida:</strong> Investigar ingredientes, historia y significado cultural de platos como la bandeja paisa, el ajiaco y las arepas.</li>
+                            <li><strong>Toma de Notas:</strong> Es crucial tomar notas en español, enfocándose en vocabulario clave para usarlo después.</li>
+                        </ul>
+                    `
+                },
+                'step-3': {
+                    title: 'Paso 3: Fase de Producción y Creación',
+                    content: `
+                        <h3 class="text-2xl font-bold text-teal-800 mb-4">Fase de Producción y Creación (Clases 4-6)</h3>
+                        <p class="mb-4 text-stone-600">Aquí es donde las ideas se convierten en realidad utilizando herramientas digitales y habilidades de redacción.</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-700">
+                            <li><strong>Diseño Gráfico:</strong> Usar Adobe Express para crear menús y carteles, y Adobe Photoshop para manipular imágenes al estilo Botero.</li>
+                            <li><strong>Creación de Textos:</strong> Redactar en español todas las descripciones para las obras de arte y los menús, incorporando elementos de realismo mágico.</li>
+                            <li><strong>Video (Opcional):</strong> Usar Adobe Premiere Pro o Rush para crear un video promocional corto.</li>
+                        </ul>
+                    `
+                },
+                'step-3.5': {
+                    title: 'Paso 3.5: Revisión entre Pares',
+                    content: `
+                        <h3 class="text-2xl font-bold text-teal-800 mb-4">Revisión entre Pares (Clase 7)</h3>
+                        <p class="mb-4 text-stone-600">Una fase crucial para mejorar la calidad del trabajo a través de la retroalimentación constructiva de los compañeros.</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-700">
+                            <li><strong>Intercambio de Proyectos:</strong> Los grupos intercambian sus borradores (menús, carteles, etc.).</li>
+                            <li><strong>Retroalimentación Guiada:</strong> Usando la guía y la rúbrica de revisión, los estudiantes evalúan el trabajo de sus compañeros, ofreciendo sugerencias específicas.</li>
+                            <li><strong>Mejora del Proyecto:</strong> Los grupos utilizan los comentarios recibidos para refinar y pulir su trabajo antes de la presentación final.</li>
+                        </ul>
+                    `
+                },
+                'step-4': {
+                    title: 'Paso 4: Presentación y Exhibición Final',
+                    content: `
+                        <h3 class="text-2xl font-bold text-teal-800 mb-4">Presentación y Exhibición (Clases 8-9)</h3>
+                        <p class="mb-4 text-stone-600">¡El gran evento! Es el momento de compartir el trabajo final con la clase y celebrar la creatividad y el aprendizaje.</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-700">
+                            <li><strong>Montaje del Espacio:</strong> Los grupos decoran su área en el aula, transformándola en su galería o restaurante.</li>
+                            <li><strong>Presentación Oral:</strong> Un miembro de cada grupo actúa como guía o anfitrión, explicando el proyecto en español.</li>
+                            <li><strong>Interacción:</strong> La clase participa como "visitantes", haciendo preguntas en español para crear una experiencia inmersiva.</li>
+                        </ul>
+                    `
+                }
+            };
+
+            const timelineNav = document.getElementById('timeline-nav');
+            const stepContentContainer = document.getElementById('step-content');
+
+            function updateContent(stepId) {
+                const stepData = steps[stepId];
+                if (stepData) {
+                    stepContentContainer.innerHTML = stepData.content;
+                }
+                
+                Array.from(timelineNav.children).forEach(child => {
+                    child.classList.remove('active-step');
+                });
+                document.getElementById(stepId).classList.add('active-step');
+            }
+
+            timelineNav.addEventListener('click', function(e) {
+                const targetStep = e.target.closest('.timeline-item');
+                if (targetStep) {
+                    updateContent(targetStep.id);
+                }
+            });
+
+            updateContent('step-1');
+
+            const btnTeacher = document.getElementById('btn-rubric-teacher');
+            const btnPeer = document.getElementById('btn-rubric-peer');
+            const contentTeacher = document.getElementById('rubric-teacher-content');
+            const contentPeer = document.getElementById('rubric-peer-content');
+
+            btnTeacher.addEventListener('click', () => {
+                contentTeacher.classList.remove('hidden');
+                contentPeer.classList.add('hidden');
+                btnTeacher.classList.add('text-teal-700', 'border-teal-700');
+                btnTeacher.classList.remove('text-stone-500', 'border-transparent');
+                btnPeer.classList.add('text-stone-500', 'border-transparent');
+                btnPeer.classList.remove('text-teal-700', 'border-teal-700');
+            });
+
+            btnPeer.addEventListener('click', () => {
+                contentPeer.classList.remove('hidden');
+                contentTeacher.classList.add('hidden');
+                btnPeer.classList.add('text-teal-700', 'border-teal-700');
+                btnPeer.classList.remove('text-stone-500', 'border-transparent');
+                btnTeacher.classList.add('text-stone-500', 'border-transparent');
+                btnTeacher.classList.remove('text-teal-700', 'border-teal-700');
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
